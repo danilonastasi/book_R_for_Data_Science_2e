@@ -1,6 +1,11 @@
 
+#####  R. version: 4.3.2 2023/10/31  #####
+
 ##### from the book "R for Data Science" #####
 ##### Oreilly & Associates Inc; 2nd edition (July 18, 2023) #####
+
+#####    code tested on __________   #####
+
 
 ##### 1  Data visualization #####
 
