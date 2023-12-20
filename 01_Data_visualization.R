@@ -12,7 +12,7 @@
 # library(tidyverse)
 
 # If you run this code and get the error message there is no package called 'tidyverse', 
-you’ll need to first install it, then run library() once again.
+# you’ll need to first install it, then run library() once again.
 
 # install.packages("tidyverse")
 library(tidyverse)
