@@ -246,3 +246,111 @@ ggplot(
   scale_color_colorblind()
 
 # We finally have a plot that perfectly matches our “ultimate goal”!
+
+
+#### 1.3 ggplot2 calls ####
+
+# As we move on from these introductory sections, we’ll transition to a more concise 
+# expression of ggplot2 code. So far we’ve been very explicit, which is helpful when 
+# you are learning:
+
+ggplot(
+  data = penguins,
+  mapping = aes(x = flipper_length_mm, y = body_mass_g)
+) +
+  geom_point()
+
+# Typically, the first one or two arguments to a function are so important that you 
+# should know them by heart. The first two arguments to ggplot() are data and mapping, 
+# in the remainder of the book, we won’t supply those names. That saves typing, and, by 
+# reducing the amount of extra text, makes it easier to see what’s different between 
+# plots. That’s a really important programming concern that we’ll come back to in 
+# Chapter 25.
+
+# Rewriting the previous plot more concisely yields:
+
+ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) + 
+  geom_point()
+
+# In the future, you’ll also learn about the pipe, |>, which will allow you to create 
+# that plot with:
+
+penguins |> 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) + 
+  geom_point()
+
+
+#### 1.4 Visualizing distributions ####
+
+# How you visualize the distribution of a variable depends on the type of variable: 
+# categorical or numerical.
+
+#### 1.4.1 A categorical variable ####
+
+# A variable is categorical if it can only take one of a small set of values. 
+# To examine the distribution of a categorical variable, you can use a bar chart. 
+# The height of the bars displays how many observations occurred with each x value.
+
+ggplot(penguins, aes(x = species)) +
+  geom_bar()
+
+# In bar plots of categorical variables with non-ordered levels, like the penguin 
+# species above, it’s often preferable to reorder the bars based on their frequencies. 
+# Doing so requires transforming the variable to a factor (how R handles categorical data) 
+# and then reordering the levels of that factor.
+
+ggplot(penguins, aes(x = fct_infreq(species))) +
+  geom_bar()
+
+# You will learn more about factors and functions for dealing with factors 
+# (like fct_infreq() shown above) in Chapter 16.
+
+
+#### 1.4.2 A numerical variable ####
+
+# A variable is numerical (or quantitative) if it can take on a wide range of numerical 
+# values, and it is sensible to add, subtract, or take averages with those values. 
+# Numerical variables can be continuous or discrete.
+
+# One commonly used visualization for distributions of continuous variables is a histogram.
+
+ggplot(penguins, aes(x = body_mass_g)) +
+  geom_histogram(binwidth = 200)
+
+# A histogram divides the x-axis into equally spaced bins and then uses the height of a 
+# bar to display the number of observations that fall in each bin. In the graph above, 
+# the tallest bar shows that 39 observations have a body_mass_g value between 3,500 and 
+# 3,700 grams, which are the left and right edges of the bar.
+
+# You can set the width of the intervals in a histogram with the binwidth argument, 
+# which is measured in the units of the x variable. You should always explore a variety 
+# of binwidths when working with histograms, as different binwidths can reveal different 
+# patterns. In the plots below a binwidth of 20 is too narrow, resulting in too many bars,
+# making it difficult to determine the shape of the distribution. Similarly, a binwidth 
+# of 2,000 is too high, resulting in all data being binned into only three bars, and 
+# also making it difficult to determine the shape of the distribution. A binwidth 
+# of 200 provides a sensible balance.
+
+ggplot(penguins, aes(x = body_mass_g)) +
+  geom_histogram(binwidth = 20)
+ggplot(penguins, aes(x = body_mass_g)) +
+  geom_histogram(binwidth = 2000)
+
+# An alternative visualization for distributions of numerical variables is a density plot. 
+# A density plot is a smoothed-out version of a histogram and a practical alternative, 
+# particularly for continuous data that comes from an underlying smooth distribution. 
+# We won’t go into how geom_density() estimates the density (you can read more about that 
+# in the function documentation), but let’s explain how the density curve is drawn with 
+# an analogy. Imagine a histogram made out of wooden blocks. Then, imagine that you drop 
+# a cooked spaghetti string over it. The shape the spaghetti will take draped over blocks 
+# can be thought of as the shape of the density curve. It shows fewer details than a 
+# histogram but can make it easier to quickly glean the shape of the distribution, 
+# particularly with respect to modes and skewness.
+
+ggplot(penguins, aes(x = body_mass_g)) +
+  geom_density()
+#> Warning: Removed 2 rows containing non-finite values (`stat_density()`).
+
+
+#### 1.5 Visualizing relationships ####
+
