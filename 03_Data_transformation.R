@@ -206,6 +206,33 @@ flights |>
   count(origin, dest, sort = TRUE)
 
 
+##### 3.2.5 Exercises #####
+
+# 3. Sort flights to find the fastest flights. (Hint: Try including a math calculation 
+#    inside of your function.)
+
+print(flights |>
+      arrange(distance/air_time), width = Inf)
+
+# 4. Was there a flight on every day of 2013?
+
+print(flights |>   
+      distinct(day, month), width = Inf)
+
+# 6. Does it matter what order you used filter() and arrange() if you’re using both? 
+#    Why/why not? Think about the results and how much work the functions would have to do.
+
+print(flights |>  
+      arrange(desc(dep_delay)) |> filter(month == 7), width = Inf)
+
+print(flights |>  
+      filter(month == 7) |> arrange(desc(dep_delay)), width = Inf)
+
+       # the result does't change
+
+
+##### 3.3 Columns #####
+
 
 
 
