@@ -176,6 +176,35 @@ flights |>
 
 ##### 3.2.4 distinct() #####
 
+# distinct() finds all the unique rows in a dataset, so in a technical sense, it primarily 
+# operates on the rows. Most of the time, however, you’ll want the distinct combination of 
+# some variables, so you can also optionally supply column names:
+
+# Remove duplicate rows, if any
+flights |> 
+  distinct()
+
+# Find all unique origin and destination pairs
+flights |> 
+  distinct(origin, dest)
+
+# Alternatively, if you want to the keep other columns when filtering for unique rows, 
+# you can use the .keep_all = TRUE option.
+
+flights |> 
+  distinct(origin, dest, .keep_all = TRUE)
+
+# It’s not a coincidence that all of these distinct flights are on January 1: distinct() 
+# will find the first occurrence of a unique row in the dataset and discard the rest.
+
+# If you want to find the number of occurrences instead, you’re better off swapping 
+# distinct() for count(), and with the sort = TRUE argument you can arrange them in 
+# descending order of number of occurrences. You’ll learn more about count in 
+# Section 13.3.
+
+flights |>
+  count(origin, dest, sort = TRUE)
+
 
 
 
