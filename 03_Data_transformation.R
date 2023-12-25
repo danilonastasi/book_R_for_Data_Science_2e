@@ -297,8 +297,77 @@ flights |>
 
 ##### 3.3.2 select() #####
 
+# It’s not uncommon to get datasets with hundreds or even thousands of variables. 
+# In this situation, the first challenge is often just focusing on the variables you’re 
+# interested in. select() allows you to rapidly zoom in on a useful subset using 
+# operations based on the names of the variables:
+
+# Select columns by name:
+flights |> 
+  select(year, month, day)
+
+# Select all columns between year and day (inclusive):
+flights |> 
+  select(year:day)
+
+# Select all columns except those from year to day (inclusive):
+flights |> 
+  select(!year:day)
+
+# Historically this operation was done with - instead of !, so you’re likely to see 
+# that in the wild. These two operators serve the same purpose but with subtle differences 
+# in behavior. We recommend using ! because it reads as “not” and combines well 
+# with & and |.
+
+# Select all columns that are characters:
+flights |> 
+  select(where(is.character))
+
+# There are a number of helper functions you can use within select():
+   # starts_with("abc"): matches names that begin with “abc”.
+   # ends_with("xyz"): matches names that end with “xyz”.
+   # contains("ijk"): matches names that contain “ijk”.
+   # num_range("x", 1:3): matches x1, x2 and x3.
+
+# See ?select for more details. Once you know regular expressions (the topic of Chapter 15) 
+# you’ll also be able to use matches() to select variables that match a pattern.
+
+# You can rename variables as you select() them by using =. The new name appears on the 
+# left hand side of the =, and the old variable appears on the right hand side:
+
+flights |> 
+  select(tail_num = tailnum)  # creates a copy
 
 
+##### 3.3.3. rename #####
+
+# If you want to keep all the existing variables and just want to rename a few, you can 
+# use rename() instead of select():
+
+flights |> 
+  rename(tail_num = tailnum)
+
+# If you have a bunch of inconsistently named columns and it would be painful to fix 
+# them all by hand, check out janitor::clean_names() which provides some useful 
+# automated cleaning.
+
+
+##### 3.3.4 relocate() #####
+
+# Use relocate() to move variables around. You might want to collect related variables 
+# together or move important variables to the front. By default relocate() moves 
+# variables to the front:
+
+flights |> 
+  relocate(time_hour, air_time)
+
+# You can also specify where to put them using the .before and .after arguments, 
+# just like in mutate():
+
+flights |> 
+  relocate(year:dep_time, .after = time_hour)
+flights |> 
+  relocate(starts_with("arr"), .before = dep_time)
 
 
 
