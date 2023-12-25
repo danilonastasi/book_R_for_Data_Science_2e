@@ -234,9 +234,68 @@ print(flights |>
 ##### 3.3 Columns #####
 
 
+##### 3.3.1 mutate() #####
+
+# The job of mutate() is to add new columns that are calculated from the existing columns. 
+# In the transform chapters, you’ll learn a large set of functions that you can use to 
+# manipulate different types of variables. For now, we’ll stick with basic algebra, 
+# which allows us to compute the gain, how much time a delayed flight made up in the air, 
+# and the speed in miles per hour:
+
+flights |> 
+  mutate(
+    gain = dep_delay - arr_delay,
+    speed = distance / air_time * 60
+  )
+
+# By default, mutate() adds new columns on the right hand side of your dataset, 
+# which makes it difficult to see what’s happening here. We can use the .before 
+# argument to instead add the variables to the left hand side2:
+
+flights |> 
+  mutate(
+    gain = dep_delay - arr_delay,
+    speed = distance / air_time * 60,
+    .before = 1
+  )
+
+# The . is a sign that .before is an argument to the function, not the name of a third 
+# new variable we are creating. You can also use .after to add after a variable, and 
+# in both .before and .after you can use the variable name instead of a position. 
+# For example, we could add the new variables after day:
+
+flights |> 
+  mutate(
+    gain = dep_delay - arr_delay,
+    speed = distance / air_time * 60,
+    .after = day
+  )
+
+# Alternatively, you can control which variables are kept with the .keep argument. 
+# A particularly useful argument is "used" which specifies that we only keep the columns 
+# that were involved or created in the mutate() step. For example, the following output 
+# will contain only the variables dep_delay, arr_delay, air_time, gain, hours, and 
+# gain_per_hour.
+
+flights |> 
+  mutate(
+    gain = dep_delay - arr_delay,
+    hours = air_time / 60,
+    gain_per_hour = gain / hours,
+    .keep = "used"
+  )
+
+# Note that since we haven’t assigned the result of the above computation back to 
+# flights, the new variables gain, hours, and gain_per_hour will only be printed but 
+# will not be stored in a data frame. And if we want them to be available in a data 
+# frame for future use, we should think carefully about whether we want the result to be 
+# assigned back to flights, overwriting the original data frame with many more variables, 
+# or to a new object. Often, the right answer is a new object that is named informatively
+# to indicate its contents, e.g., delay_gain, but you might also have good reasons for 
+# overwriting flights.
 
 
-
+##### 3.3.2 select() #####
 
 
 
