@@ -601,4 +601,27 @@ flights |>
 
 ##### 3.5.7 Exercises #####
 
+# 1. Which carrier has the worst average delays? Challenge: can you disentangle the 
+#    effects of bad airports vs. bad carriers? Why/why not? (Hint: think about 
+#    flights |> group_by(carrier, dest) |> summarize(n()))
+
+flights |> 
+   group_by(carrier) |>
+   summarize(
+    avg_delay = mean(dep_delay, na.rm = TRUE), 
+    n = n()) |>
+   arrange(desc(avg_delay))
+
+flights |> 
+   group_by(origin, dest) |>
+   summarize(
+    avg_delay = mean(dep_delay, na.rm = TRUE), 
+    n = n()) |>
+   arrange(desc(avg_delay))
+
+
+
+
+
+
 
