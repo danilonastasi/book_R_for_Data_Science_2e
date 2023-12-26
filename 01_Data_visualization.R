@@ -4,7 +4,7 @@
 ##### from the book "R for Data Science" #####
 ##### Oreilly & Associates Inc; 2nd edition (July 18, 2023) #####
 
-#####    code tested on 12/22/2023   #####
+#####    code tested on 12/26/2023   #####
 
 
 ##### 1  Data visualization #####
@@ -468,6 +468,30 @@ ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
 
 # You will learn about many other geoms for visualizing distributions of variables and 
 # relationships between them in Chapter 9.
+
+
+#### 1.5.5 Exercises ####
+
+# 2. Make a scatterplot of hwy vs. displ using the mpg data frame. Next, map a third, 
+# numerical variable to color, then size, then both color and size, then shape. How do 
+# these aesthetics behave differently for categorical vs. numerical variables?
+
+ggplot(mpg, aes(x = hwy, y = displ)) +
+  geom_point(aes(color = cyl))
+
+ggplot(mpg, aes(x = hwy, y = displ)) +
+  geom_point(aes(size = cyl))
+
+ggplot(mpg, aes(x = hwy, y = displ)) +
+  geom_point(aes(color = cyl, size = cyl))
+
+# ggplot(mpg, aes(x = hwy, y = displ)) +
+#  geom_point(aes(shape = cyl)) # error: A continuous variable cannot be 
+                                # mapped to the shape aesthetic.
+
+ggplot(mpg, aes(x = hwy, y = displ)) +
+  geom_point(aes(shape = manufacturer)) # it works but can shape just six brand, 
+                                        # for the rest brands no sign.
 
 
 #### 1.6 Saving your plots ####
