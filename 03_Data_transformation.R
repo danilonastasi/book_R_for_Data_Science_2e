@@ -384,7 +384,29 @@ flights |>
 flights |> 
   select(dep_time, dep_delay, arr_time, arr_delay)
 
+# 4. What does the any_of() function do? Why might it be helpful in conjunction with 
+# this vector?
 
+variables <- c("year", "month", "day", "dep_delay", "arr_delay")
+flights |> 
+  select(any_of(variables))
+
+# 5. Does the result of running the following code surprise you? How do the select 
+# helpers deal with upper and lower case by default? How can you change that default?
+
+flights |> select(contains("TIME"))
+
+# 6. Rename air_time to air_time_min to indicate units of measurement and move it to 
+# the beginning of the data frame.
+
+flights |> 
+  mutate(
+    air_time_min = air_time * 60,
+    .before = 1
+  )
+
+
+##### 3.4 The pipe #####
 
 
 
