@@ -370,6 +370,21 @@ flights |>
   relocate(starts_with("arr"), .before = dep_time)
 
 
+##### 3.3.5 Exercises #####
+
+# 2. Brainstorm as many ways as possible to select dep_time, dep_delay, arr_time, 
+# and arr_delay from flights.
+
+flights |> 
+  select(starts_with("dep"), starts_with("arr"))
+
+flights |> 
+  select(starts_with(c("dep", "arr")))
+
+flights |> 
+  select(dep_time, dep_delay, arr_time, arr_delay)
+
+
 
 
 
