@@ -619,9 +619,37 @@ flights |>
     n = n()) |>
    arrange(desc(avg_delay))
 
+# 2. Find the flights that are most delayed upon departure from each destination.
+
+flights |> 
+   select(dest, origin, dep_delay, flight, carrier) |>
+   group_by(dest) |>
+   slice_max(dep_delay, n = 1, with_ties = FALSE) |>
+   arrange(desc(dep_delay))
+
+# 3. How do delays vary over the course of the day. Illustrate your answer with a plot.
+
+hr_delay <- flights |>
+   group_by(hour, dep_delay) |>
+   summarize(
+      avg_delay = mean(dep_delay, na.rm = TRUE), 
+      n = n()) |>
+   arrange(desc(dep_delay))
+
+
+
+hr_delay_agg <- aggregate(dep_delay ~ hour, data=hr_delay, sum) # I sum all the values 
+                                                               # that have the same hour
 
 
 
 
+na.rm = TRUE
 
+
+ggplot(hr_delay_agg, aes(x = hour, y = dep_delay)) + 
+    geom_point() +
+
+ggplot(hr_delay_agg, aes(x = hour)) +
+  geom_density()
 
