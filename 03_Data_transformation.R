@@ -408,6 +408,178 @@ flights |>
 
 ##### 3.4 The pipe #####
 
+# We’ve shown you simple examples of the pipe above, but its real power arises when 
+# you start to combine multiple verbs. For example, imagine that you wanted to find 
+# the fast flights to Houston’s IAH airport: you need to combine filter(), mutate(), 
+# select(), and arrange():
+
+flights |> 
+  filter(dest == "IAH") |> 
+  mutate(speed = distance / air_time * 60) |> 
+  select(year:day, dep_time, carrier, flight, speed) |> 
+  arrange(desc(speed))
+
+# To add the pipe to your code, we recommend using the built-in keyboard shortcut 
+# Ctrl/Cmd + Shift + M. You’ll need to make one change to your RStudio options to 
+# use |> instead of %>% as shown in Figure 3.1; more on %>% shortly.
+
+# magrittr
+# If you’ve been using the tidyverse for a while, you might be familiar with the %>% pipe 
+# provided by the magrittr package. The magrittr package is included in the core tidyverse, 
+# so you can use %>% whenever you load the tidyverse:
+
+# For simple cases, |> and %>% behave identically. So why do we recommend the base pipe? 
+# Firstly, because it’s part of base R, it’s always available for you to use, even when 
+# you’re not using the tidyverse. 
+
+
+##### 3.5 Groups #####
+
+
+##### 3.5.1 group_by() #####
+
+# Use group_by() to divide your dataset into groups meaningful for your analysis:
+
+flights |> 
+  group_by(month)
+
+# group_by() doesn’t change the data but, if you look closely at the output, you’ll notice 
+# that the output indicates that it is “grouped by” month (Groups: month [12]). This means 
+# subsequent operations will now work “by month”. group_by() adds this grouped feature 
+# (referred to as class) to the data frame, which changes the behavior of the subsequent 
+# verbs applied to the data.
+
+
+##### 3.5.2 summarize() #####
+
+# The most important grouped operation is a summary, which, if being used to calculate a 
+# single summary statistic, reduces the data frame to have a single row for each group. 
+# In dplyr, this operation is performed by summarize()3, as shown by the following example, 
+# which computes the average departure delay by month:
+
+flights |> 
+  group_by(month) |> 
+  summarize(
+    avg_delay = mean(dep_delay)
+  )
+
+# N.B. Uhoh! Something has gone wrong and all of our results are NAs (pronounced “N-A”), 
+# R’s symbol for missing value. This happened because some of the observed flights had 
+# missing data in the delay column, and so when we calculated the mean including those 
+# values, we got an NA result. We’ll come back to discuss missing values in detail in 
+# Chapter 18, but for now we’ll tell the mean() function to ignore all missing values 
+# by setting the argument na.rm to TRUE:
+
+flights |> 
+  group_by(month) |> 
+  summarize(
+    avg_delay = mean(dep_delay, na.rm = TRUE)
+  )
+
+# You can create any number of summaries in a single call to summarize(). You’ll learn 
+# various useful summaries in the upcoming chapters, but one very useful summary is n(), 
+# which returns the number of rows in each group:
+
+flights |> 
+  group_by(month) |> 
+  summarize(
+    avg_delay = mean(dep_delay, na.rm = TRUE), 
+    n = n()
+  )
+
+# Means and counts can get you a surprisingly long way in data science!
+
+
+##### 3.5.3 The slice_ functions #####
+
+# There are five handy functions that allow you extract specific rows within each group:
+
+   # df |> slice_head(n = 1) takes the first row from each group.
+   # df |> slice_tail(n = 1) takes the last row in each group.
+   # df |> slice_min(x, n = 1) takes the row with the smallest value of column x.
+   # df |> slice_max(x, n = 1) takes the row with the largest value of column x.
+   # df |> slice_sample(n = 1) takes one random row.
+
+# You can vary n to select more than one row, or instead of n =, you can use prop = 0.1 
+# to select (e.g.) 10% of the rows in each group. For example, the following code finds 
+# the flights that are most delayed upon arrival at each destination:
+
+flights |> 
+  group_by(dest) |> 
+  slice_max(arr_delay, n = 1) |>
+  relocate(dest)
+
+# Note that there are 105 destinations but we get 108 rows here. What’s up? slice_min() 
+# and slice_max() keep tied values so n = 1 means give us all rows with the highest value. 
+# If you want exactly one row per group you can set with_ties = FALSE.
+
+# This is similar to computing the max delay with summarize(), but you get the whole 
+# corresponding row (or rows if there’s a tie) instead of the single summary statistic.
+
+flights |> 
+  group_by(dest) |> 
+  slice_max(arr_delay, n = 1, with_ties = FALSE) |>
+  relocate(dest)
+
+
+##### 3.5.4 Grouping by multiple variables #####
+
+# You can create groups using more than one variable. For example, we could make a group 
+# for each date.
+
+daily <- flights |>  
+  group_by(year, month, day)
+
+daily
+
+# When you summarize a tibble grouped by more than one variable, each summary peels off 
+# the last group. In hindsight, this wasn’t a great way to make this function work, but 
+# it’s difficult to change without breaking existing code. To make it obvious what’s 
+# happening, dplyr displays a message that tells you how you can change this behavior:
+
+daily_flights <- daily |> 
+  summarize(n = n())
+#> `summarise()` has grouped output by 'year', 'month'. You can override using
+#> the `.groups` argument.
+
+# If you’re happy with this behavior, you can explicitly request it in order to suppress 
+# the message:
+
+daily_flights <- daily |> 
+  summarize(
+    n = n(), 
+    .groups = "drop_last"
+  )
+
+# Alternatively, change the default behavior by setting a different value, e.g., "drop" 
+# to drop all grouping or "keep" to preserve the same groups.
+
+
+##### 3.5.5 Ungrouping #####
+
+# You might also want to remove grouping from a data frame without using summarize(). 
+# You can do this with ungroup().
+
+daily |> 
+  ungroup()
+
+# Now let’s see what happens when you summarize an ungrouped data frame.
+
+daily |> 
+  ungroup() |>
+  summarize(
+    avg_delay = mean(dep_delay, na.rm = TRUE), 
+    flights = n()
+  )
+
+# You get a single row back because dplyr treats all the rows in an ungrouped data 
+# frame as belonging to one group.
+
+
+##### 3.5.6 .by  #####
+
+
+
 
 
 
