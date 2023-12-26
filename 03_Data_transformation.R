@@ -578,9 +578,27 @@ daily |>
 
 ##### 3.5.6 .by  #####
 
+# dplyr 1.1.0 includes a new, experimental, syntax for per-operation grouping, 
+# the .by argument. group_by() and ungroup() aren’t going away, but you can now also 
+# use the .by argument to group within a single operation:
+
+# Or if you want to group by multiple variables:
+
+flights |> 
+  summarize(
+    delay = mean(dep_delay, na.rm = TRUE), 
+    n = n(),
+    .by = c(origin, dest)
+  )
+
+# .by works with all verbs and has the advantage that you don’t need to use the .groups 
+# argument to suppress the grouping message or ungroup() when you’re done.
+
+# We didn’t focus on this syntax in this chapter because it was very new when we wrote 
+# the book. We did want to mention it because we think it has a lot of promise and it’s 
+# likely to be quite popular. You can learn more about it in the dplyr 1.1.0 blog post.
 
 
-
-
+##### 3.5.7 Exercises #####
 
 
