@@ -613,6 +613,15 @@ flights |>
    arrange(desc(avg_delay))
 
 flights |> 
+   group_by(carrier) |>
+   summarize(
+    avg_delay = mean(dep_delay, na.rm = TRUE), 
+    n = n()) |>
+    slice_max(avg_delay, n = 1, with_ties = FALSE) |>
+    relocate(carrier) # |>
+   # arrange(desc(avg_delay))
+
+flights |> 
    group_by(origin, dest) |>
    summarize(
     avg_delay = mean(dep_delay, na.rm = TRUE), 
@@ -652,10 +661,83 @@ labs(
 # hr_delay_agg <- aggregate(dep_delay ~ hour, data=flights, sum) # I sum all the values 
                                                    # (dep_delay that have the same hour
 
+# 4. What happens if you supply a negative n to slice_min() and friends?
 
+flights |> 
+  group_by(dest) |> 
+  slice_min(arr_delay, n = -1) |>  # we get all flights rows but sorted by minimum
+                                   # arr_delay
+  relocate(dest)
 
+# 5. Explain what count() does in terms of the dplyr verbs you just learned. 
+#    What does the sort argument to count() do?
 
+   # count() finds all the unique rows in a dataset, removing duplicate rows, so in a 
+   # technical sense, it primarily operates on the rows.
 
+   # Will find the first occurrence of a unique row in the dataset and discard the rest.
 
+   # count() permits you to find the number of occurrences, and with the 
+   # sort = TRUE argument  you can arrange them in descending order of number 
+   # of occurrences.
 
+# 6. Suppose we have the following tiny data frame:
+
+df <- tibble(
+  x = 1:5,
+  y = c("a", "b", "a", "a", "b"),
+  z = c("K", "K", "L", "L", "K")
+)
+
+# a. Write down what you think the output will look like, then check if you were 
+# correct, and describe what group_by() does.
+##### answer: we get a data frame 5 x 3 with 3 variables in columns x, y, z
+
+df |>
+  group_by(y)
+
+# b. Write down what you think the output will look like, then check if you were 
+# correct, and describe what arrange() does. Also comment on how it’s different 
+# from the group_by() in part (a)?
+##### answer: same result as above but we select the group y
+
+df |>
+  arrange(y)
+
+# Write down what you think the output will look like, then check if you were correct, 
+# and describe what the pipeline does.
+##### answer: we sort the data frame by the variable y
+
+df |>
+  group_by(y) |>
+  summarize(mean_x = mean(x))
+
+# Write down what you think the output will look like, then check if you were correct, 
+# and describe what the pipeline does. Then, comment on what the message says.
+##### answer: we select the group y and we calculate for y the average value of x
+#####         associated to the same value of y, we semplify the data frame
+
+df |>
+  group_by(y, z) |>
+  summarize(mean_x = mean(x))
+
+# Write down what you think the output will look like, then check if you were correct, 
+# and describe what the pipeline does. How is the output different from the one in part (d).
+##### answer: we do the same as above but this time we operate for y and z combinations
+
+df |>
+  group_by(y, z) |>
+  summarize(mean_x = mean(x), .groups = "drop")
+
+# Write down what you think the outputs will look like, then check if you were correct, 
+# and describe what each pipeline does. How are the outputs of the two pipelines different?
+##### answer: same result as above but we drop all groups
+
+df |>
+  group_by(y, z) |>
+  summarize(mean_x = mean(x))  # we get a tibble 3 x 3
+
+df |>
+  group_by(y, z) |>
+  mutate(mean_x = mean(x)) # same result as above but we get a tibble 5 x 4
 
