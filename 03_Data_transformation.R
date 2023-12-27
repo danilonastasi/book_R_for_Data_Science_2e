@@ -645,12 +645,13 @@ hr_delay <- flights |>
       n = n()) # |>
    # arrange(desc(avg_delay))
 
-ggplot(hr_delay, aes(x = hour, y = avg_delay)) + 
+ggplot(hr_delay, aes(x = hour, y = avg_delay, color = n)) + 
     geom_point(size = 2) +
-    geom_smooth() +
+    geom_smooth(se = FALSE) +
 labs(
     title = "How do delays vary over the course of the day?",
-    subtitle = "comparing hours ( 5:00 to 23:00) and average delay (minutes)",
+    subtitle = "comparing hours ( 5:00 to 23:00) and average delay (minutes),
+   n indicates the number of flights in one year at that hour",
     x = "hours", y = "average delay (minutes)"
   )
 
