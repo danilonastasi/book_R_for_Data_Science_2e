@@ -4,7 +4,7 @@
 ##### from the book "R for Data Science" #####
 ##### Oreilly & Associates Inc; 2nd edition (July 18, 2023) #####
 
-#####    code tested on 12/27/2023   #####
+#####    code tested on 12/29/2023   #####
 
 
 ##### 3  Data transformation #####
@@ -647,6 +647,8 @@ hr_delay <- flights |>
 
 ggplot(hr_delay, aes(x = hour, y = avg_delay, color = n)) + 
     geom_point(size = 2) +
+    # scale_x_continuous(breaks = c(5:23)) + # x-axis continuous
+    scale_x_continuous(breaks = seq(5, 23, by=2)) + # x-axis continuous with step
     geom_smooth(se = FALSE) +
 labs(
     title = "How do delays vary over the course of the day?",
