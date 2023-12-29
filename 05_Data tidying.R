@@ -4,7 +4,7 @@
 ##### from the book "R for Data Science" #####
 ##### Oreilly & Associates Inc; 2nd edition (July 18, 2023) #####
 
-#####    code tested on _________   #####
+#####    code tested on 29/12/2023   #####
 
 
 ##### 5  Data tidying #####
@@ -257,13 +257,159 @@ household |>
 # of explicit missing variables (e.g., for families with only one child).
 
 
+##### 5.4 Widening data #####
+
+# So far we’ve used pivot_longer() to solve the common class of problems where values 
+# have ended up in column names. Next we’ll pivot (HA HA) to pivot_wider(), which makes 
+# datasets wider by increasing columns and reducing rows and helps when one observation 
+# is spread across multiple rows. This seems to arise less commonly in the wild, but 
+# it does seem to crop up a lot when dealing with governmental data.
+
+# We’ll start by looking at cms_patient_experience, a dataset from the Centers of 
+# Medicare and Medicaid services that collects data about patient experiences:
+
+cms_patient_experience
+
+# The core unit being studied is an organization, but each organization is spread 
+# across six rows, with one row for each measurement taken in the survey organization. 
+# We can see the complete set of values for measure_cd and measure_title by 
+# using distinct():
+
+cms_patient_experience |> 
+  distinct(measure_cd, measure_title)
+
+# Neither of these columns will make particularly great variable names: measure_cd doesn’t 
+# hint at the meaning of the variable and measure_title is a long sentence containing 
+# spaces. We’ll use measure_cd as the source for our new column names for now, but in a 
+# real analysis you might want to create your own variable names that are both short and 
+# meaningful.
+
+# pivot_wider() has the opposite interface to pivot_longer(): instead of choosing new 
+# column names, we need to provide the existing columns that define the values 
+# (values_from) and the column name (names_from):
+
+cms_patient_experience |> 
+  pivot_wider(
+    names_from = measure_cd,
+    values_from = prf_rate
+  )
+
+# The output doesn’t look quite right; we still seem to have multiple rows for each 
+# organization. That’s because, we also need to tell pivot_wider() which column or 
+# columns have values that uniquely identify each row; in this case those are the 
+# variables starting with "org":
+
+cms_patient_experience |> 
+  pivot_wider(
+    id_cols = starts_with("org"),
+    names_from = measure_cd,
+    values_from = prf_rate
+  )
+
+# This gives us the output that we’re looking for.
 
 
+##### 5.4.1 How does pivot_wider() work? #####
+
+# To understand how pivot_wider() works, let’s again start with a very simple dataset. 
+# This time we have two patients with ids A and B, we have three blood pressure 
+# measurements on patient A and two on patient B:
+
+df <- tribble(
+  ~id, ~measurement, ~value,
+  "A",        "bp1",    100,
+  "B",        "bp1",    140,
+  "B",        "bp2",    115, 
+  "A",        "bp2",    120,
+  "A",        "bp3",    105
+)
+
+# We’ll take the values from the value column and the names from the measurement column:
+
+df |> 
+  pivot_wider(
+    names_from = measurement,
+    values_from = value
+  )
+
+# To begin the process pivot_wider() needs to first figure out what will go in the 
+# rows and columns. The new column names will be the unique values of measurement.
+
+df |> 
+  distinct(measurement) |> 
+  pull()
+
+# By default, the rows in the output are determined by all the variables that aren’t 
+# going into the new names or values. These are called the id_cols. Here there is only 
+# one column, but in general there can be any number.
+
+df |> 
+  select(-measurement, -value) |> 
+  distinct()
+
+# pivot_wider() then combines these results to generate an empty data frame:
+
+df |> 
+  select(-measurement, -value) |> 
+  distinct() |> 
+  mutate(x = NA, y = NA, z = NA)
+
+# It then fills in all the missing values using the data in the input. In this case, 
+# not every cell in the output has a corresponding value in the input as there’s no 
+# third blood pressure measurement for patient B, so that cell remains missing. We’ll 
+# come back to this idea that pivot_wider() can “make” missing values in Chapter 18.
+
+# You might also wonder what happens if there are multiple rows in the input that 
+# correspond to one cell in the output. The example below has two rows that correspond 
+# to id “A” and measurement “bp1”:
+
+df <- tribble(
+  ~id, ~measurement, ~value,
+  "A",        "bp1",    100,
+  "A",        "bp1",    102,
+  "A",        "bp2",    120,
+  "B",        "bp1",    140, 
+  "B",        "bp2",    115
+)
+
+# If we attempt to pivot this we get an output that contains list-columns, which you’ll 
+# learn more about in Chapter 23:
+
+df |>
+  pivot_wider(
+    names_from = measurement,
+    values_from = value
+  )
+# we get a warning
+
+# Since you don’t know how to work with this sort of data yet, you’ll want to follow 
+# the hint in the warning to figure out where the problem is:
+
+df |> 
+  group_by(id, measurement) |> 
+  summarize(n = n(), .groups = "drop") |> 
+  filter(n > 1)
+
+# It’s then up to you to figure out what’s gone wrong with your data and either repair 
+# the underlying damage or use your grouping and summarizing skills to ensure that 
+# each combination of row and column values only has a single row.
 
 
+##### 5.5 Summary #####
 
+# The examples we presented here are a selection of those from 
+# vignette("pivot", package = "tidyr"), so if you encounter a problem that this chapter 
+# doesn’t help you with, that vignette is a good place to try next.
 
+# We didn’t actually define what a variable is (and it’s surprisingly hard to do so). 
+# It’s totally fine to be pragmatic and to say a variable is whatever makes your analysis 
+# easiest. So if you’re stuck figuring out how to do some computation, consider 
+# switching up the organisation of your data; don’t be afraid to untidy, transform, 
+# and re-tidy as needed!
 
+# If you enjoyed this chapter and want to learn more about the underlying theory, 
+# you can learn more about the history and theoretical underpinnings in the 
+# Tidy Data paper published in the Journal of Statistical Software.
 
 
 
