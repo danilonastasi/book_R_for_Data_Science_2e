@@ -15,7 +15,7 @@
 # Specifically, we will compare what proportion of times a player gets a hit (H) vs. the 
 # number of times they try to put the ball in play (AB):
 
-install.packages("Lahman")
+# install.packages("Lahman")
 library(Lahman)
 glimpse(Batting)
 head(Batting, 20)
