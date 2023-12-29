@@ -4,7 +4,7 @@
 ##### from the book "R for Data Science" #####
 ##### Oreilly & Associates Inc; 2nd edition (July 18, 2023) #####
 
-#####    code tested on 12/27/2023   #####
+#####    code tested on 12/29/2023   #####
 
 
 ##### 3.6 Case study: aggregates and sample size #####
@@ -15,8 +15,8 @@
 # Specifically, we will compare what proportion of times a player gets a hit (H) vs. the 
 # number of times they try to put the ball in play (AB):
 
-# install.packages("Lahman")
-library(Batting)
+install.packages("Lahman")
+library(Lahman)
 glimpse(Batting)
 head(Batting, 20)
 
