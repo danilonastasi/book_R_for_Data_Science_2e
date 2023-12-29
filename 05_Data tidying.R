@@ -4,7 +4,7 @@
 ##### from the book "R for Data Science" #####
 ##### Oreilly & Associates Inc; 2nd edition (July 18, 2023) #####
 
-#####    code tested on 29/12/2023   #####
+#####    code tested on 12/29/2023   #####
 
 
 ##### 5  Data tidying #####
