@@ -52,8 +52,8 @@ students
 
 # In the favourite.food column, there are a bunch of food items, and then the character 
 # string N/A, which should have been a real NA that R will recognize as “not available”. 
-# This is something we can address using the na argument. By default, read_csv() only 
-# recognizes empty strings ("") in this dataset as NAs, we want it to also recognize 
+# This is something we can address using the na argument. By default, read_csv() 
+# only recognizes empty strings ("") in this dataset as NAs, we want it to also recognize 
 # the character string "N/A".
 
 students <- read_csv("data/students.csv", na = c("N/A", ""))
@@ -74,7 +74,7 @@ students |>
 # An alternative approach is to use janitor::clean_names() to use some heuristics to 
 # turn them all into snake case at once. The janitor package is not part of the tidyverse, 
 # but it offers handy functions for data cleaning and works well within data pipelines 
-that use |>.
+# that use |>.
 
 students |> janitor::clean_names
 
@@ -165,6 +165,29 @@ read_csv(
 # These arguments are all you need to know to read the majority of CSV files that 
 # you’ll encounter in practice. (For the rest, you’ll need to carefully inspect 
 # your .csv file and read the documentation for read_csv()’s many other arguments.)
+
+
+##### 7.2.3 Other file types #####
+
+# Once you’ve mastered read_csv(), using readr’s other functions is straightforward; 
+# it’s just a matter of knowing which function to reach for:
+
+  # read_csv2() # reads semicolon-separated files. These use ; instead of , to 
+              # separate fields and are common in countries that use , as the 
+              # decimal marker.
+
+  # read_tsv() # reads tab-delimited files.
+
+  # read_delim() # reads in files with any delimiter, attempting to automatically 
+               # guess the delimiter if you don’t specify it.
+
+  # read_fwf() # reads fixed-width files. You can specify fields by their widths 
+             # with fwf_widths() or by their positions with fwf_positions().
+
+  # read_table() # reads a common variation of fixed-width files where columns 
+               # are separated by white space.
+
+  # read_log() # reads Apache-style log files.
 
 
 
