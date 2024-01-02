@@ -271,19 +271,21 @@ read_csv(simple_csv, na = ".")
 # readr provides a total of nine column types for you to use:
 
   # - col_logical() and col_double() read logicals and real numbers. They’re 
-  #   relatively rarely needed (except as above), since readr will usually guess them for you.
-  # - col_integer() reads integers. We seldom distinguish integers and doubles in this book 
-  #   because they’re functionally equivalent, but reading integers explicitly can occasionally 
-  #   be useful because they occupy half the memory of doubles.
-  # - col_character() reads strings. This can be useful to specify explicitly when you have a 
-  #   column that is a numeric identifier, i.e., long series of digits that identifies an object 
-  #   but doesn’t make sense to apply mathematical operations to. Examples include phone numbers, 
-      social security numbers, credit card numbers, etc.
+  #   relatively rarely needed (except as above), since readr will usually guess them 
+  #   for you.
+  # - col_integer() reads integers. We seldom distinguish integers and doubles in 
+  #   this book because they’re functionally equivalent, but reading integers explicitly 
+  #   can occasionally be useful because they occupy half the memory of doubles.
+  # - col_character() reads strings. This can be useful to specify explicitly 
+  #   when you have a column that is a numeric identifier, i.e., long series of 
+  #   digits that identifies an object but doesn’t make sense to apply mathematical 
+  #   operations to. Examples include phone numbers, social security numbers, credit card 
+  #   numbers, etc.
   # - col_factor(), col_date(), and col_datetime() create factors, dates, and date-times 
   #   respectively; you’ll learn more about those when we get to those data types in 
   #   Chapter 16 and Chapter 17.
-  # - col_number() is a permissive numeric parser that will ignore non-numeric components, and 
-  #   is particularly useful for currencies. You’ll learn more about it in Chapter 13.
+  # - col_number() is a permissive numeric parser that will ignore non-numeric components, 
+  #   and is particularly useful for currencies. You’ll learn more about it in Chapter 13.
   # - col_skip() skips a column so it’s not included in the result, which can be useful for 
   #   speeding up reading the data if you have a large CSV file and you only want to use 
   #   some of the columns.
@@ -308,7 +310,45 @@ read_csv(
 )
 
 
-##### 
+##### 7.4 Reading data from multiple files #####
+
+# Sometimes your data is split across multiple files instead of being contained in a single 
+# file. For example, you might have sales data for multiple months, with each month’s data 
+# in a separate file: 01-sales.csv for January, 02-sales.csv for February, and 03-sales.csv 
+# for March. With read_csv() you can read these data in at once and stack them on top of each 
+# other in a single data frame.
+
+sales_files <- c("data/01-sales.csv", "data/02-sales.csv", "data/03-sales.csv")
+read_csv(sales_files, id = "file")
+
+# Once again, the code above will work if you have the CSV files in a data folder in your 
+# project. You can download these files from https://pos.it/r4ds-01-sales, 
+# https://pos.it/r4ds-02-sales, and https://pos.it/r4ds-03-sales or you can read them 
+# directly with:
+
+sales_files <- c(
+  "https://pos.it/r4ds-01-sales",
+  "https://pos.it/r4ds-02-sales",
+  "https://pos.it/r4ds-03-sales"
+)
+read_csv(sales_files, id = "file")
+
+# The id argument adds a new column called file to the resulting data frame that 
+# identifies the file the data come from. This is especially helpful in circumstances 
+# where the files you’re reading in do not have an identifying column that can help you 
+# trace the observations back to their original sources.
+
+# If you have many files you want to read in, it can get cumbersome to write out their 
+# names as a list. Instead, you can use the base list.files() function to find the files 
+# for you by matching a pattern in the file names. You’ll learn more about these patterns 
+# in Chapter 15.
+
+sales_files <- list.files("data", pattern = "sales\\.csv$", full.names = TRUE)
+sales_files
+
+
+##### 7.5 Writing to a file #####
+
 
 
 
