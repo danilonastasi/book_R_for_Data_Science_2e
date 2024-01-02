@@ -349,6 +349,43 @@ sales_files
 
 ##### 7.5 Writing to a file #####
 
+# readr also comes with two useful functions for writing data back to disk: write_csv() 
+# and write_tsv(). The most important arguments to these functions are x (the data frame 
+# to save) and file (the location to save it). You can also specify how missing values 
+# are written with na, and if you want to append to an existing file.
+
+write_csv(students, "students.csv")
+
+# Now let’s read that csv file back in. Note that the variable type information that 
+# you just set up is lost when you save to CSV because you’re starting over with reading 
+# from a plain text file again:
+
+students
+
+write_csv(students, "students-2.csv")
+read_csv("students-2.csv")
+
+# This makes CSVs a little unreliable for caching interim results—you need to recreate 
+# the column specification every time you load in. There are two main alternatives:
+
+  # 1. write_rds() and read_rds() are uniform wrappers around the base functions 
+  #    readRDS() and saveRDS(). These store data in R’s custom binary format 
+  #    called RDS. This means that when you reload the object, you are loading 
+  #    the exact same R object that you stored.
+
+       write_rds(students, "students.rds")
+       read_rds("students.rds")
+
+  # 2. The arrow package allows you to read and write parquet files, a fast binary 
+  #    file format that can be shared across programming languages. We’ll return 
+  #    to arrow in more depth in Chapter 22.
+
+       library(arrow)
+       write_parquet(students, "students.parquet")
+       read_parquet("students.parquet")
+
+# Parquet tends to be much faster than RDS and is usable outside of R, but does 
+# require the arrow package.
 
 
 
