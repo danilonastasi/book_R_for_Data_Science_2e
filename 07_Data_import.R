@@ -190,6 +190,32 @@ read_csv(
   # read_log() # reads Apache-style log files.
 
 
+##### 7.3 Controlling column types #####
+
+
+##### 7.3.1 Guessing types #####
+
+# readr uses a heuristic to figure out the column types. For each column, it 
+# pulls the values of 1,000^2 rows spaced evenly from the first row to the 
+# last, ignoring missing values. It then works through the following questions:
+
+  # - Does it contain only F, T, FALSE, or TRUE (ignoring case)? If so, it’s 
+  #   a logical.
+  # - Does it contain only numbers (e.g., 1, -4.5, 5e6, Inf)? If so, it’s a 
+  #   number.
+  # - Does it match the ISO8601 standard? If so, it’s a date or date-time. 
+  #   (We’ll return to date-times in more detail in Section 17.2).
+  # - Otherwise, it must be a string
+
+# You can see that behavior in action in this simple example:
+
+read_csv("
+  logical,numeric,date,string
+  TRUE,1,2021-01-15,abc
+  false,4.5,2021-02-15,def
+  T,Inf,2021-02-16,ghi
+")
+
 
 
 
