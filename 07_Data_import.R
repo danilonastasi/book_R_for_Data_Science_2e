@@ -388,6 +388,32 @@ read_csv("students-2.csv")
 # require the arrow package.
 
 
+##### 7.6 Data entry #####
+
+# Sometimes you’ll need to assemble a tibble “by hand” doing a little data entry in your
+# R script. There are two useful functions to help you do this which differ in whether 
+# you layout the tibble by columns or by rows. tibble() works by column:
+
+tibble(
+  x = c(1, 2, 5), 
+  y = c("h", "m", "g"),
+  z = c(0.08, 0.83, 0.60)
+)
+
+# Laying out the data by column can make it hard to see how the rows are related, so an 
+# alternative is tribble(), short for transposed tibble, which lets you lay out your 
+# data row by row. tribble() is customized for data entry in code: column headings start 
+# with ~ and entries are separated by commas. This makes it possible to lay out small 
+# amounts of data in an easy to read form:
+
+tribble(
+  ~x, ~y, ~z,
+  1, "h", 0.08,
+  2, "m", 0.83,
+  5, "g", 0.60
+)
+
+
 
 
 
