@@ -216,9 +216,99 @@ read_csv("
   T,Inf,2021-02-16,ghi
 ")
 
+# This heuristic works well if you have a clean dataset, but in real life, 
+# you’ll encounter a selection of weird and beautiful failures.
 
 
+##### 7.3.2 Missing values, column types, and problems #####
 
+# The most common way column detection fails is that a column contains 
+# unexpected values, and you get a character column instead of a more 
+# specific type. One of the most common causes for this is a missing value, 
+# recorded using something other than the NA that readr expects.
+
+# Take this simple 1 column CSV file as an example:
+
+simple_csv <- "
+  x
+  10
+  .
+  20
+  30"
+
+# If we read it without any additional arguments, x becomes a character 
+# column:
+
+read_csv(simple_csv)
+
+# In this very small case, you can easily see the missing value .. But what 
+# happens if you have thousands of rows with only a few missing values 
+# represented by .s sprinkled among them? One approach is to tell readr that 
+# x is a numeric column, and then see where it fails. You can do that with the 
+# col_types argument, which takes a named list where the names match the 
+# column names in the CSV file:
+
+df <- read_csv(
+  simple_csv, 
+  col_types = list(x = col_double())
+)
+
+# Now read_csv() reports that there was a problem, and tells us we can 
+# find out more with problems():
+
+problems(df)
+
+# This tells us that there was a problem in row 3, col 1 where readr 
+# expected a double but got a .. That suggests this dataset uses . 
+# for missing values. So then we set na = ".", the automatic guessing 
+# succeeds, giving us the numeric column that we want:
+
+read_csv(simple_csv, na = ".")
+
+
+##### 7.3.3 Column types #####
+
+# readr provides a total of nine column types for you to use:
+
+  # - col_logical() and col_double() read logicals and real numbers. They’re 
+  #   relatively rarely needed (except as above), since readr will usually guess them for you.
+  # - col_integer() reads integers. We seldom distinguish integers and doubles in this book 
+  #   because they’re functionally equivalent, but reading integers explicitly can occasionally 
+  #   be useful because they occupy half the memory of doubles.
+  # - col_character() reads strings. This can be useful to specify explicitly when you have a 
+  #   column that is a numeric identifier, i.e., long series of digits that identifies an object 
+  #   but doesn’t make sense to apply mathematical operations to. Examples include phone numbers, 
+      social security numbers, credit card numbers, etc.
+  # - col_factor(), col_date(), and col_datetime() create factors, dates, and date-times 
+  #   respectively; you’ll learn more about those when we get to those data types in 
+  #   Chapter 16 and Chapter 17.
+  # - col_number() is a permissive numeric parser that will ignore non-numeric components, and 
+  #   is particularly useful for currencies. You’ll learn more about it in Chapter 13.
+  # - col_skip() skips a column so it’s not included in the result, which can be useful for 
+  #   speeding up reading the data if you have a large CSV file and you only want to use 
+  #   some of the columns.
+
+# It’s also possible to override the default column by switching from list() to cols() and 
+# specifying .default:
+
+another_csv <- "
+x,y,z
+1,2,3"
+
+read_csv(
+  another_csv, 
+  col_types = cols(.default = col_character())
+)
+
+# Another useful helper is cols_only() which will read in only the columns you specify:
+
+read_csv(
+  another_csv,
+  col_types = cols_only(x = col_character())
+)
+
+
+##### 
 
 
 
