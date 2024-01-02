@@ -50,7 +50,79 @@
   #   in a way that is easy for others to play with. This substantially improves your 
   #   chances of getting help!
 
+# When creating a reprex by hand, it’s easy to accidentally miss something, meaning 
+# your code can’t be run on someone else’s computer. Avoid this problem by using the 
+# reprex package, which is installed as part of the tidyverse. Let’s say you copy 
+# this code onto your clipboard (or, on RStudio Server or Cloud, select it):
 
+y <- 1:4
+mean(y)
+
+# Then call reprex(), where the default output is formatted for GitHub:
+
+reprex::reprex()
+
+# A nicely rendered HTML preview will display in RStudio’s Viewer (if you’re in RStudio) 
+# or your default browser otherwise. The reprex is automatically copied to your clipboard 
+# (on RStudio Server or Cloud, you will need to copy this yourself):
+
+``` r
+y <- 1:4
+mean(y)
+#> [1] 2.5
+```
+
+# This text is formatted in a special way, called Markdown, which can be pasted to sites 
+# like StackOverflow or Github and they will automatically render it to look like code. 
+# Here’s what that Markdown would look like rendered on GitHub:
+
+y <- 1:4
+mean(y)
+#> [1] 2.5
+
+# Anyone else can copy, paste, and run this immediately.
+
+# There are three things you need to include to make your example reproducible: 
+# required packages, data, and code.
+
+  # 1. Packages should be loaded at the top of the script so it’s easy to see 
+  #    which ones the example needs. This is a good time to check that you’re 
+  #    using the latest version of each package; you may have discovered a bug 
+  #    that’s been fixed since you installed or last updated the package. For packages 
+  #    in the tidyverse, the easiest way to check is to run tidyverse_update().
+
+  # 2. The easiest way to include data is to use dput() to generate the R code needed 
+  #    to recreate it. For example, to recreate the mtcars dataset in R, perform the 
+  #    following steps:
+
+  #     1. Run dput(mtcars) in R
+  #     2. Copy the output
+  #     3. In reprex, type mtcars <-, then paste.
+
+  #     Try to use the smallest subset of your data that still reveals the problem.
+
+  # 3. Spend a little bit of time ensuring that your code is easy for others to read:
+
+  #    - Make sure you’ve used spaces and your variable names are concise yet 
+  #      informative.
+  #    - Use comments to indicate where your problem lies.
+  #    - Do your best to remove everything that is not related to the problem.
+
+  #    The shorter your code is, the easier it is to understand and the easier 
+  #    it is to fix.
+
+# Finish by checking that you have actually made a reproducible example by starting 
+# a fresh R session and copying and pasting your script
+
+
+##### 8.3 Investing in yourself #####
+
+# You should also spend some time preparing yourself to solve problems before 
+# they occur. Investing a little time in learning R each day will pay off 
+# handsomely in the long run. One way is to follow what the tidyverse team is 
+# doing on the tidyverse blog. To keep up with the R community more broadly, 
+# we recommend reading R Weekly: it’s a community effort to aggregate the most 
+# interesting news in the R community each week.
 
 
 
