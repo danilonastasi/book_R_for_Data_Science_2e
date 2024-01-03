@@ -5,7 +5,7 @@
 ##### from the book "R for Data Science" #####
 ##### Oreilly & Associates Inc; 2nd edition (July 18, 2023) #####
 
-#####    code tested on ______   #####
+#####    code tested on 01/03/2024   #####
 
 
 ##### 7.1.1 Prerequisites #####
@@ -56,7 +56,9 @@ students
 # only recognizes empty strings ("") in this dataset as NAs, we want it to also recognize 
 # the character string "N/A".
 
-students <- read_csv("data/students.csv", na = c("N/A", ""))
+# students <- read_csv("data/students.csv", na = c("N/A", "")) # error missing the 
+                                                        # file in data/students.csv
+students <- read_csv("https://pos.it/r4ds-students-csv", na = c("N/A", ""))
 
 students
 
@@ -76,14 +78,16 @@ students |>
 # but it offers handy functions for data cleaning and works well within data pipelines 
 # that use |>.
 
-students |> janitor::clean_names
+# install.packages("janitor")
+library(janitor)
+students |> janitor::clean_names()  
 
 # Another common task after reading in data is to consider variable types. For example, 
 # meal_plan is a categorical variable with a known set of possible values, which in R 
 # should be represented as a factor:
 
 students |>
-  janitor::clean_names() |>
+  janitor::clean_names() |> # we don't need this function anymore
   mutate(meal_plan = factor(meal_plan))
 
 # Note that the values in the meal_plan variable have stayed the same, but the type of 
@@ -133,7 +137,7 @@ read_csv(
   The second line of metadata
   x,y,z
   1,2,3",
-  skip = 2
+  skip = 2   # we skip "the first line of metadata" and "the second line of metadata"
 )
 
 read_csv(
