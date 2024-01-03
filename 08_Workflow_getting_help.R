@@ -60,7 +60,15 @@ mean(y)
 
 # Then call reprex(), where the default output is formatted for GitHub:
 
-reprex::reprex()
+# reprex::reprex()  # initially I got an error, let's try installing the package
+
+# install.packages("reprex")
+library(reprex)
+
+y <- 1:4
+mean(y)
+
+reprex() # now it works, copied in clipboard using RStudio not R
 
 # A nicely rendered HTML preview will display in RStudio’s Viewer (if you’re in RStudio) 
 # or your default browser otherwise. The reprex is automatically copied to your clipboard 
@@ -89,7 +97,9 @@ mean(y)
   #    which ones the example needs. This is a good time to check that you’re 
   #    using the latest version of each package; you may have discovered a bug 
   #    that’s been fixed since you installed or last updated the package. For packages 
-  #    in the tidyverse, the easiest way to check is to run tidyverse_update().
+  #    in the tidyverse, the easiest way to check is to run 
+       
+         tidyverse_update()
 
   # 2. The easiest way to include data is to use dput() to generate the R code needed 
   #    to recreate it. For example, to recreate the mtcars dataset in R, perform the 
