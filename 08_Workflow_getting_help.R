@@ -5,7 +5,7 @@
 ##### from the book "R for Data Science" #####
 ##### Oreilly & Associates Inc; 2nd edition (July 18, 2023) #####
 
-#####    code tested on ______   #####
+#####    code tested on  01/03/2024   #####
 
 
 ##### 8  Workflow: getting help #####
@@ -55,9 +55,11 @@
 # reprex package, which is installed as part of the tidyverse. Let’s say you copy 
 # this code onto your clipboard (or, on RStudio Server or Cloud, select it):
 
+# copy both rows in the clipboard (cmd ctrl + c)
 y <- 1:4
 mean(y)
 
+#### from RStudio: ####
 # Then call reprex(), where the default output is formatted for GitHub:
 
 # reprex::reprex()  # initially I got an error, let's try installing the package
@@ -65,10 +67,13 @@ mean(y)
 # install.packages("reprex")
 library(reprex)
 
-y <- 1:4
+reprex() # now it works, copied in clipboard  output is formatted for GitHub:
+
+# let's try copying it and see the result after reprex():
+(y <- 1:4)
 mean(y)
 
-reprex() # now it works, copied in clipboard using RStudio not R
+reprex()
 
 # A nicely rendered HTML preview will display in RStudio’s Viewer (if you’re in RStudio) 
 # or your default browser otherwise. The reprex is automatically copied to your clipboard 
@@ -107,7 +112,11 @@ mean(y)
 
   #     1. Run dput(mtcars) in R
   #     2. Copy the output
-  #     3. In reprex, type mtcars <-, then paste.
+  #     3. In reprex, type mtcars <- , then paste.
+  #         reprex(mtcars <- "paste")
+
+  #     4. or, after copying try to run
+             reprex() # and compare the results between 3. and 4.
 
   #     Try to use the smallest subset of your data that still reveals the problem.
 
