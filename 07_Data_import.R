@@ -384,6 +384,7 @@ read_csv("students-2.csv")
   #    file format that can be shared across programming languages. We’ll return 
   #    to arrow in more depth in Chapter 22.
 
+       # install.packages("arrow")
        library(arrow)
        write_parquet(students, "students.parquet")
        read_parquet("students.parquet")
